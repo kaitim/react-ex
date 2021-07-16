@@ -1,14 +1,19 @@
 import React, { Component } from "react";
 import { getMovies, deleteMovie } from "../services/fakeMovieService";
 import { getGenres } from "../services/fakeGenreService";
+import Like from "./like";
 
 class MovieList extends Component {
   state = {
     message: "",
-    movies: getMovies(),
-    genres: getGenres(),
     deleteMovie,
   };
+
+  constructor() {
+    super();
+    this.state.movies = getMovies();
+    this.state.genres = getGenres();
+  }
 
   getMessage() {
     const count = this.state.movies.length;
@@ -27,6 +32,14 @@ class MovieList extends Component {
 
   handleDelete = (movie) => {
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
+    this.setState({ movies });
+  };
+
+  handleClickLike = (movie) => {
+    const movies = [...this.state.movies];
+    const index = movies.indexOf(movie);
+    movies[index] = { ...movies[index] };
+    movies[index].like = !movie.like;
     this.setState({ movies });
   };
 
@@ -60,9 +73,13 @@ class MovieList extends Component {
                   <td>{movie.numberInStock}</td>
                   <td>{movie.dailyRentalRate}</td>
                   <td>
+                    <Like
+                      onClick={() => this.handleClickLike(movie)}
+                      isLike={movie.like}
+                    ></Like>
                     <button
                       onClick={() => this.handleDelete(movie)}
-                      className="btn btn-danger"
+                      className="btn btn-danger ml-3"
                     >
                       Delete
                     </button>
