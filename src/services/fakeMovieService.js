@@ -1,4 +1,3 @@
-import Like from "../components/like";
 import * as genresAPI from "./fakeGenreService";
 
 const movies = [

@@ -1,18 +1,21 @@
 import React, { Component } from "react";
-import { getMovies, deleteMovie } from "../services/fakeMovieService";
-import { getGenres } from "../services/fakeGenreService";
+import { deleteMovie } from "../services/fakeMovieService";
 import Like from "./like";
+import Pagination from "./common/pagination";
+import { paginate } from "../utils/paginate";
+import { getMovies } from "../services/fakeMovieService";
 
 class MovieList extends Component {
   state = {
     message: "",
     deleteMovie,
+    currentPage: 1,
+    pageSize: 4,
   };
 
   constructor() {
     super();
     this.state.movies = getMovies();
-    this.state.genres = getGenres();
   }
 
   getMessage() {
@@ -22,17 +25,13 @@ class MovieList extends Component {
       : `Showing ${count} movies in the database.`;
   }
 
-  getGenreName(checkGenre) {
-    const matchGenres = this.state.genres.filter(
-      (genre) => genre._id === checkGenre._id
-    );
-    if (matchGenres.length === 0) return null;
-    return matchGenres[0].name;
-  }
-
   handleDelete = (movie) => {
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
     this.setState({ movies });
+  };
+
+  handlePageChange = (currentPage) => {
+    this.setState({ currentPage });
   };
 
   handleClickLike = (movie) => {
@@ -44,11 +43,12 @@ class MovieList extends Component {
   };
 
   render() {
+    const { pageSize, currentPage, movies: AllMovies } = this.state;
     const { length: count } = this.state.movies;
 
-    if (count === 0) {
-      return "NOthing";
-    }
+    if (count === 0) return "Nothing";
+
+    const movies = paginate(AllMovies, currentPage, pageSize);
 
     return (
       <React.Fragment>
@@ -64,12 +64,13 @@ class MovieList extends Component {
               <th></th>
             </tr>
           </thead>
+
           <tbody>
-            {this.state.movies.map((movie) => {
+            {movies.map((movie) => {
               return (
                 <tr key={movie._id}>
                   <td>{movie.title}</td>
-                  <td>{this.getGenreName(movie.genre)}</td>
+                  <td>{movie.genre.name}</td>
                   <td>{movie.numberInStock}</td>
                   <td>{movie.dailyRentalRate}</td>
                   <td>
@@ -89,6 +90,13 @@ class MovieList extends Component {
             })}
           </tbody>
         </table>
+
+        <Pagination
+          itemsCount={count}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={this.handlePageChange}
+        ></Pagination>
       </React.Fragment>
     );
   }
