@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import Joi from "joi-browser";
 import Input from "./input";
 
@@ -28,7 +28,7 @@ class Form extends Component {
 
     e.preventDefault();
 
-    this.doSubmit();
+    this.doSubmit(this.state.data);
   };
 
   handleChange = ({ currentTarget: input }) => {
@@ -62,6 +62,36 @@ class Form extends Component {
         onChange={this.handleChange}
         error={errors[name]}
       />
+    );
+  }
+
+  renderSelect(name, label, lists) {
+    const { data, errors } = this.state;
+
+    return (
+      <React.Fragment>
+        <div className="form-group">
+          <label htmlFor={name}>{label}</label>
+          <select
+            className="form-control"
+            id={name}
+            name={name}
+            value={data[name]}
+            onChange={this.handleChange}
+          >
+            <option value="">Please select</option>
+            {lists.length > 0 &&
+              lists.map((g) => (
+                <option key={g._id} value={g._id}>
+                  {g.name}
+                </option>
+              ))}
+          </select>
+          {errors[name] && (
+            <div className="alert alert-danger">{errors[name]}</div>
+          )}
+        </div>
+      </React.Fragment>
     );
   }
 }

@@ -8,7 +8,8 @@ import Customers from "./components/customers";
 import Rentals from "./components/rentals";
 import NotFound from "./components/not-found";
 import LoginForm from "./components/loginForm";
-import RegisterForm from './components/registerForm';
+import RegisterForm from "./components/registerForm";
+import MovieForm from "./components/movieForm";
 
 class App extends Component {
   render() {
@@ -20,8 +21,10 @@ class App extends Component {
             <Route path="/login" component={LoginForm}></Route>
             <Route path="/register" component={RegisterForm}></Route>
 
-            <Route path="/movie/:id" component={Movie} />
+            <Route path="/movies/new" component={MovieForm} />
+            <Route path="/movies/:id" component={MovieForm} />
             <Route path="/movies" component={MovieList} />
+
             <Route path="/customers" component={Customers} />
             <Route path="/rentals" component={Rentals} />
             <Route path="/not-found" component={NotFound} />

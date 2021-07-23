@@ -99,6 +99,13 @@ class MovieList extends Component {
         </div>
 
         <div className="col">
+          <button
+            className="btn btn-primary mb-3"
+            onClick={() => this.props.history.push("/movies/new")}
+          >
+            New Movie
+          </button>
+
           <div className="message">{this.getMessage(totalCount)}</div>
 
           <MoviesTable
