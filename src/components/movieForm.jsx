@@ -2,7 +2,7 @@ import React from "react";
 import Form from "./common/form";
 import Joi from "joi-browser";
 import { getGenres } from "../services/fakeGenreService";
-import { getMovies, saveMovie } from "../services/fakeMovieService";
+import { getMovie, saveMovie } from "../services/fakeMovieService";
 
 class MovieForm extends Form {
   state = {
@@ -14,27 +14,24 @@ class MovieForm extends Form {
       dailyRentalRate: 0,
     },
     errors: {},
-    movies: [],
     genres: [],
   };
 
   componentDidMount() {
-    // check id valid
+    const genres = getGenres();
+    this.setState({ genres });
+
     const id = this.props.match.params.id;
+    if (id === "new") return;
 
-    let data = { ...this.state.data };
-    const movies = getMovies();
+    const movie = getMovie(id);
+    if (!movie) return this.props.history.replace("/not-found");
 
-    if (id) {
-      console.log(id);
-      const matched = movies.filter((m) => m._id === id);
-      if (matched.length === 0) this.props.history.push("/not-found");
-      // insert initial value
-      data = { genreId: matched[0].genre._id, ...matched[0] };
-      delete data["genre"];
-    }
+    // insert initial value
+    const data = { genreId: movie.genre._id, ...movie };
+    delete data["genre"];
 
-    this.setState({ data, movies, genres: getGenres() });
+    this.setState({ data, genres });
   }
 
   schema = {
@@ -46,10 +43,8 @@ class MovieForm extends Form {
   };
 
   doSubmit = (data) => {
-    console.log("doSubmit", data);
-
-    // server save
-    // saveMovie
+    saveMovie(data);
+    this.props.history.push("/movies");
   };
 
   render() {
@@ -62,7 +57,7 @@ class MovieForm extends Form {
           {this.renderInput("title", "Title")}
           {this.renderSelect("genreId", "Genre", genres)}
           {this.renderInput("numberInStock", "Number in Stock", "number")}
-          {this.renderInput("dailyRentalRate", "Rate")}
+          {this.renderInput("dailyRentalRate", "Rate", "number")}
           {this.renderButton("Save")}
         </form>
       </React.Fragment>

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { deleteMovie } from "../services/fakeMovieService";
 import Pagination from "./common/pagination";
 import { paginate } from "../utils/paginate";
-import { getMovies } from "../services/fakeMovieService";
+import { getMovies, deleteMovie } from "../services/fakeMovieService";
 import ListGroup from "./common/listGroup";
 import { getGenres } from "../services/fakeGenreService";
 import MoviesTable from "./moviesTable";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 class MovieList extends Component {
   state = {
@@ -32,8 +32,8 @@ class MovieList extends Component {
   }
 
   handleDelete = (movie) => {
-    const movies = this.state.movies.filter((m) => m._id !== movie._id);
-    this.setState({ movies });
+    deleteMovie(movie._id);
+    this.setState({ movies: getMovies() });
   };
 
   handlePageChange = (currentPage) => {
@@ -68,8 +68,8 @@ class MovieList extends Component {
     const filtered =
       selectedGenre && selectedGenre._id
         ? allMovies.filter((m) => {
-            return m.genre._id === selectedGenre._id;
-          })
+          return m.genre._id === selectedGenre._id;
+        })
         : allMovies;
 
     const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
@@ -99,12 +99,12 @@ class MovieList extends Component {
         </div>
 
         <div className="col">
-          <button
+          <Link
+            to={"/movies/new"}
             className="btn btn-primary mb-3"
-            onClick={() => this.props.history.push("/movies/new")}
           >
             New Movie
-          </button>
+          </Link>
 
           <div className="message">{this.getMessage(totalCount)}</div>
 

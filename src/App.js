@@ -3,7 +3,6 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import "./App.css";
 import NavBar from "./components/navBar";
 import MovieList from "./components/movieList";
-import Movie from "./components/movie";
 import Customers from "./components/customers";
 import Rentals from "./components/rentals";
 import NotFound from "./components/not-found";
@@ -21,7 +20,6 @@ class App extends Component {
             <Route path="/login" component={LoginForm}></Route>
             <Route path="/register" component={RegisterForm}></Route>
 
-            <Route path="/movies/new" component={MovieForm} />
             <Route path="/movies/:id" component={MovieForm} />
             <Route path="/movies" component={MovieList} />
 

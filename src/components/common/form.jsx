@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Joi from "joi-browser";
 import Input from "./input";
+import Select from "./select";
 
 class Form extends Component {
   state = { data: {}, errors: {} };
@@ -38,7 +39,7 @@ class Form extends Component {
     else delete errors[input.name];
 
     const data = { ...this.state.data };
-    data[input.name] = input.value;
+    data[input.name] = input.type === 'number' ? Number(input.value) : input.value;
     this.setState({ data, errors });
   };
 
@@ -69,29 +70,14 @@ class Form extends Component {
     const { data, errors } = this.state;
 
     return (
-      <React.Fragment>
-        <div className="form-group">
-          <label htmlFor={name}>{label}</label>
-          <select
-            className="form-control"
-            id={name}
-            name={name}
-            value={data[name]}
-            onChange={this.handleChange}
-          >
-            <option value="">Please select</option>
-            {lists.length > 0 &&
-              lists.map((g) => (
-                <option key={g._id} value={g._id}>
-                  {g.name}
-                </option>
-              ))}
-          </select>
-          {errors[name] && (
-            <div className="alert alert-danger">{errors[name]}</div>
-          )}
-        </div>
-      </React.Fragment>
+      <Select
+        label={label}
+        name={name}
+        value={data[name]}
+        lists={lists}
+        onChange={this.handleChange}
+        error={errors[name]}
+      />
     );
   }
 }
