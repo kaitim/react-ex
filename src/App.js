@@ -7,6 +7,7 @@ import Movie from "./components/movie";
 import Customers from "./components/customers";
 import Rentals from "./components/rentals";
 import NotFound from "./components/not-found";
+import LoginForm from "./components/loginForm";
 
 class App extends Component {
   render() {
@@ -15,6 +16,8 @@ class App extends Component {
         <NavBar />
         <main className="content">
           <Switch>
+            <Route path="/login" component={LoginForm}></Route>
+
             <Route path="/movie/:id" component={Movie} />
             <Route path="/movies" component={MovieList} />
             <Route path="/customers" component={Customers} />
